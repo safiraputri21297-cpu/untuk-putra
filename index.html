@@ -1,0 +1,952 @@
+<!-- <!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Kamu, Putra</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg-color: #000000;
+    --bg-gradient: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
+    --card-bg: #0f0f0f;
+    --text-main: #f0f0f0;
+    --text-dim: #a0a0a0;
+    --accent: #f0f0f0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body, html { height: 100%; font-family: 'Inter', sans-serif; color: var(--text-main); background: var(--bg-color); overflow-x: hidden; scroll-behavior: smooth; }
+
+/* BACKGROUND ELEMENT: FLOATING HEARTS */
+.bg-elements { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: var(--bg-gradient); }
+.heart-float { position: absolute; color: rgba(240,240,240,0.15); font-size: 20px; animation: floatUp 10s infinite linear; opacity: 0; text-shadow: 0 0 5px rgba(255,255,255,0.2); }
+@keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity:0;} 50%{opacity:0.8;} 100%{transform:translateY(-10vh) scale(1.2); opacity:0;} }
+
+/* PASSWORD OVERLAY */
+#passwordOverlay { position: fixed; inset:0; background:black; display:flex; justify-content:center; align-items:center; z-index:10000; text-align:center; flex-direction:column; transition: 0.8s ease; }
+#passwordOverlay h1 { font-family: 'Playfair Display'; font-weight:400; margin-bottom:20px; letter-spacing:2px; }
+#passwordOverlay input { padding:12px 20px; border-radius:30px; border:1px solid #333; background:transparent; color:white; font-size:16px; width:260px; text-align:center; outline:none; transition:0.3s; }
+#passwordOverlay input:focus { border-color: var(--accent); }
+#passwordOverlay button { padding:10px 30px; margin-top:20px; border:none; border-radius:30px; background:var(--accent); color:black; cursor:pointer; font-size:14px; font-weight:600; transition:0.3s; }
+
+/* INTRO SCREEN */
+#intro { position: fixed; inset:0; background:black; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; z-index:9999; transition: opacity 1.5s ease; }
+#intro .icon { font-size:30px; margin-bottom:15px; filter: drop-shadow(0 0 10px white); }
+#intro h1 { font-family: 'Playfair Display', serif; font-size:48px; font-style:italic; margin-bottom:15px; }
+#playMusicIntro { margin-top:30px; padding:12px 25px; border:1px solid var(--accent); border-radius:5px; background:transparent; color:var(--accent); cursor:pointer; transition:0.4s; }
+#playMusicIntro:hover { background:var(--accent); color:black; }
+
+/* MAIN CONTENT */
+#main { display:none; min-height:100vh; position:relative; z-index:1; }
+section { min-height:100vh; padding:80px 20px; display:flex; align-items:center; justify-content:center; transition: transform 1s ease, opacity 1s ease; opacity:0; transform:translateY(40px); }
+section.visible { transform:translateY(0); opacity:1; }
+
+.content { display:flex; gap:50px; align-items:center; max-width:900px; background:var(--card-bg); padding:40px; border-radius:20px; border:1px solid #1a1a1a; flex-wrap:wrap; justify-content:center; }
+.content img, .content video { width:100%; max-width:350px; border-radius:10px; filter:grayscale(100%); transition:0.7s ease; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
+.content img:hover { filter:grayscale(0%); transform:scale(1.02); }
+
+.text { flex:1; min-width:300px; margin-left:30px; }
+.text h1 { font-family:'Playfair Display', serif; font-size:32px; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px; }
+.text p { font-size:17px; line-height:1.8; color:var(--text-dim); }
+
+/* TYPEWRITER */
+.word-span { 
+    display: inline-block; 
+    opacity: 0; 
+    transform: translateY(5px); 
+    transition: 0.4s ease-out; 
+    /* Ini adalah kunci agar spasi tidak hilang dan teks tidak berantakan */
+    white-space: pre-wrap; 
+}
+
+.word-span.show { 
+    opacity: 1; 
+    transform: translateY(0); 
+}
+
+/* DIGITAL LETTER */
+.letter-box { width:100%; text-align:center; padding:20px; }
+#envelopeIcon { font-size:60px; cursor:pointer; transition:0.3s; margin:20px 0; }
+#fullLetter { display:none; text-align:left; margin-top:30px; }
+.signature { margin-top:30px; font-family:'Playfair Display'; font-style:italic; text-align:right; }
+
+/* CONTROLS */
+#musicBtn { position:fixed; top:30px; right:30px; z-index:10000; background:rgba(255,255,255,0.1); border:1px solid #333; color:white; width:45px; height:45px; border-radius:50%; cursor:pointer; }
+.lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:opacity 0.4s; z-index:10001; }
+.lightbox.active { opacity:1; pointer-events:auto; }
+.lightbox img { max-width:85%; max-height:85%; border:1px solid #333; }
+
+@media (max-width:768px){
+    .content{ padding:25px; gap:30px; flex-direction:column; }
+    #intro h1{ font-size:32px; }
+    .text h1{ font-size:26px; text-align:center; }
+    .text p{ text-align:center; font-size:15px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-elements" id="bgHearts"></div>
+
+<div id="passwordOverlay">
+<h1>PRIVATE ACCESS</h1>
+<input type="password" id="pwInput" placeholder="Masukkan Password">
+<button onclick="checkPassword()">MULAI</button>
+</div>
+
+<audio id="bgMusic" src="lagu.mp3" loop></audio>
+<button id="musicBtn" onclick="toggleMusic()">🔇</button>
+
+<div id="intro" style="display:none">
+    <div class="icon">🤍</div>
+    <h1>Untuk Kamu</h1>
+    <p>yang pernah jadi rumah.</p>
+    <button id="playMusicIntro">MASUK KE MOMEN</button>
+</div>
+
+<div id="main">
+
+<section>
+<div class="content">
+    <img src="first_meet.jpg" alt="The Beginning">
+    <div class="text">
+        <h1>The Beginning</h1>
+        <p class="typewriter">Setelah sekian lama hanya bertukar cerita lewat layar,
+             akhirnya semesta mempertemukan kita secara nyata. Momen di mana aku selalu keinget rasanya jatuh cinta sama kamu untuk pertamakalinya..</p>
+    </div>
+</div>
+</section>
+
+<section>
+<div class="content">
+    <img src="foto2.jpg" alt="When I Was Happy">
+    <div class="text">
+        <h1>When I was Happy</h1>
+        <p class="typewriter">Pernah bahagia bareng kamu, dan itu nyata, meskipun sekarang tinggal kenangan. 
+              Di sini kamu nembak aku pas kita lagi nonton film sore dan pulangnya kita kehujanan haha u know how loved i felt at that time..</p>
+    </div>
+</div>
+</section>
+
+<section>
+<div class="content">
+    <div class="text">
+        <h1>What I’ll Remember</h1>
+        <p class="typewriter">Ini video yang pengen aku ingat terus, momen kita bareng.</p>
+    </div>
+    <video controls>
+        <source src="video.mp4" type="video/mp4">
+        Browsermu tidak mendukung video.
+    </video>
+</div>
+</section>
+
+<section>
+<div class="content" style="flex-direction: column; align-items: center;">
+<h1>Funny Moments</h1>
+<div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%;">
+    <img src="funny1.jpg" alt="Funny Moment 1" style="max-width: 45%;">
+    <img src="funny2.jpg" alt="Funny Moment 2" style="max-width: 45%;">
+</div>
+<p class="typewriter" style="margin-top:20px; max-width:700px; text-align:center;">
+Aku masih ngakak kalo inget kita maskeran bareng, muka kita kayak badut tapi kita tetep happy. Terus pas nyuci motor bareng, hal sepele itu malah jadi momen yang bikin aku ngerasa dekat sama kamu. Rasanya hangat gitu, kayak rumah kecil yang cuma kita berdua ngerti.
+</p>
+</div>
+</section>
+
+<section>
+<div class="content">
+    <img src="sunset.jpg" alt="Sunset Moment">
+    <div class="text">
+        <h1>Quiet Moments</h1>
+        <p class="typewriter">Kadang aku cuma pengen naik moku sama kamu, keliling atau berhenti jajan sebentar, tanpa ribet. Sunyi itu nggak sepi karena ada kamu, dan momen-momen sederhana itu justru yang paling aku inget terus.</p>
+    </div>
+</div>
+</section>
+
+<section id="closure">
+<div class="content">
+    <div class="letter-box" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <h1 style="font-family:'Playfair Display'; border:none; margin-bottom:20px;">The Last Chapter</h1>
+        <div id="envelopeIcon">✉️</div>
+        
+        <div id="fullLetter" style="display:none; width: 100%; max-width: 800px; text-align:left;">
+            <textarea id="digitalLetter" style="width:100%; min-height:350px; padding:25px; border-radius:15px; border:1px solid #333; background:#0a0a0a; color:#f0f0f0; font-family: 'Inter', sans-serif; font-size:16px; line-height:1.8; resize:none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">Putra, Aku cuma mau bilang... terima kasih. Terima kasih untuk semua rasa sayangmu, untuk semua hal yang pernah kamu korbankan buat aku. Aku tahu nggak gampang kadang, tapi kamu tetap kasih aku perhatian, kasih aku rumah saat aku butuh. Aku bener-bener menghargai itu, lebih dari yang bisa aku ucapin. Aku juga mau minta maaf... untuk semua salahku selama kita pacaran, untuk semua kata yang salah, sikap yang bikin kamu sakit, dan momen-momen di mana aku nggak bisa jadi yang terbaik buat kita. Aku sadar banyak hal yang aku lakukan yang bikin hubungan kita capek, termasuk diriku sendiri. Aku pengen perbaiki diriku, bukan cuma buat hubungan kita, tapi buat aku sendiri. Aku mau belajar dari saran-saranmu waktu itu, mau berubah jadi versi diri yang lebih baik, yang kamu dulu pernah harapin, yang kamu pernah harap aku bisa jadi. Aku nggak akan lari dari itu lagi. Aku sayang kamu, kamu tau itu. Tapi aku juga sadar... terlalu banyak hal yang bikin aku kehilangan diriku sendiri. Sekarang, aku mau bangkit, mau lebih kuat, lebih dewasa, dan lebih bisa mencintai diriku sendiri—seperti yang selalu kamu mau aku lakukan. Terima kasih untuk semuanya, Putra. Semua yang pernah kita lewati, semua yang pernah kita rasain... aku nggak akan lupain. Aku cuma berharap suatu saat kita bisa saling tersenyum lagi, tanpa beban, walau mungkin jalannya beda sekarang.</textarea>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 25px; width: 100%;">
+    
+    <button onclick="saveLetter()" style="padding: 12px 30px; border: none; border-radius: 30px; background: #f0f0f0; color: black; font-weight: 600; cursor: pointer; align-self: flex-start;">
+        
+    </button>
+
+    <div class="signature" style="text-align: right; display: flex; flex-direction: column; align-items: flex-end;">
+        <p style="font-size: 15px; color: #a0a0a0; margin: 0;">With love and goodbye,</p>
+        <p style="font-size: 32px; color: #fff; font-family: 'Playfair Display', serif; margin: 5px 0 0 0; line-height: 1;">Safira </p>
+    </div>
+
+</div>
+<p id="letterSaved" style="margin-top: 15px; display: none; color: #777; text-align: center; width: 100%;">Pesan tersimpan di browsermu ✨</p>
+        </div>
+    </div>
+</div>
+</section>
+
+<section id="noteForMiwa">
+<div class="content">
+    <div class="text" style="text-align:center;">
+        <h1>One Last Note</h1>
+        <p class="typewriter">Kalau kamu sudah sampai sejauh ini, aku ingin dengar satu hal darimu.</p>
+        <textarea id="noteInput" placeholder="Tulis sesuatu untuk Miwa…" style="width:100%; max-width:500px; height:150px; margin-top:25px; padding:15px; background:#0a0a0a; border:1px solid #333; border-radius:10px; color:#f0f0f0; resize:none;"></textarea>
+        <br><br>
+        <button onclick="saveNote()" style="padding:10px 25px; border:none; border-radius:25px; background:#f0f0f0; color:black;">Simpan Pesan</button>
+        <p id="noteSaved" style="margin-top:15px; display:none; color:#777;">Pesan ini tersimpan.</p>
+    </div>
+</div>
+</section>
+
+<footer style="padding:60px; text-align:center; color:#444; font-style:italic;">Halaman ini dibuat untuk merayakan semua cerita yang pernah kita miliki.</footer>
+
+</div>
+
+<div class="lightbox" id="lightbox"></div>
+
+<script>
+const music = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+
+// FLOATING HEARTS
+const heartBox = document.getElementById('bgHearts');
+for(let i=0;i<15;i++){
+    let heart = document.createElement('div');
+    heart.className='heart-float';
+    heart.innerHTML='🤍';
+    heart.style.left=Math.random()*100+'vw';
+    heart.style.animationDelay=Math.random()*8+'s';
+    heart.style.fontSize=(Math.random()*15+10)+'px';
+    heartBox.appendChild(heart);
+}
+
+// PASSWORD
+function checkPassword(){
+    const pw = document.getElementById('pwInput').value;
+    if(pw==="loveputra"){
+        document.getElementById('passwordOverlay').style.opacity='0';
+        setTimeout(()=>{
+            document.getElementById('passwordOverlay').style.display='none';
+            document.getElementById('intro').style.display='flex';
+        },800);
+    } else { alert('Password salah 😢'); }
+}
+
+// INTRO + MUSIC
+document.getElementById('playMusicIntro').addEventListener('click', ()=>{
+    music.volume=0;
+    music.play();
+    let fadeIn = setInterval(()=>{
+        if(music.volume<0.9){ music.volume+=0.1; } 
+        else{ music.volume=1; clearInterval(fadeIn);}
+    },200);
+    musicBtn.textContent='🔊';
+    const intro=document.getElementById('intro');
+    intro.style.opacity='0';
+    setTimeout(()=>{
+        intro.style.display='none';
+        document.getElementById('main').style.display='block';
+        revealSections();
+    },1500);
+});
+
+function toggleMusic(){
+    if(music.paused){ music.play(); musicBtn.textContent='🔊'; } 
+    else { music.pause(); musicBtn.textContent='🔇'; }
+}
+
+// TYPEWRITER
+function runTypewriter(el) {
+    if (el.dataset.animated === "true") return;
+    el.dataset.animated = "true";
+    
+    const text = el.innerText;
+    el.innerHTML = ''; 
+
+    // Menggunakan Array.from agar karakter unik/emoji tidak pecah
+    Array.from(text).forEach((char, i) => {
+        const span = document.createElement('span');
+        
+        // Jika karakter adalah spasi, kita beri konten spasi agar 'inline-block' punya lebar
+        span.textContent = char; 
+        span.className = 'word-span';
+        
+        el.appendChild(span);
+        
+        // Munculkan huruf satu per satu
+        setTimeout(() => {
+            span.classList.add('show');
+        }, i * 40); // Kecepatan mengetik
+    });
+}
+
+// SCROLL OBSERVER
+function revealSections(){
+    const observer = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+            if(entry.isIntersecting){
+                entry.target.classList.add('visible');
+                const tp=entry.target.querySelector('.typewriter');
+                if(tp) runTypewriter(tp);
+            }
+        });
+    },{threshold:0.2});
+    document.querySelectorAll('section').forEach(section=>observer.observe(section));
+}
+
+// LIGHTBOX
+const lightbox = document.getElementById('lightbox');
+document.querySelectorAll('section img').forEach(img=>{
+    img.addEventListener('click', ()=>{
+        lightbox.innerHTML=`<img src="${img.src}">`;
+        lightbox.classList.add('active');
+    });
+});
+lightbox.addEventListener('click', ()=>lightbox.classList.remove('active'));
+
+// LETTER
+document.getElementById('envelopeIcon').addEventListener('click', function(){
+    // Menghilangkan ikon amplop
+    this.style.display = 'none';
+    
+    // Menampilkan kotak surat yang sudah berisi teks tadi
+    const fullLetter = document.getElementById('fullLetter');
+    fullLetter.style.display = 'block';
+});
+
+
+// NOTE MIWA
+const noteInput = document.getElementById("noteInput");
+const noteSaved = document.getElementById("noteSaved");
+if(localStorage.getItem("noteForMiwa")) noteInput.value = localStorage.getItem("noteForMiwa");
+function saveNote(){
+    localStorage.setItem("noteForMiwa", noteInput.value);
+    noteSaved.style.display="block";
+}
+</script>
+
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Kamu, Putra</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg-color: #000000;
+    --card-bg: #0f0f0f;
+    --text-main: #f0f0f0;
+    --text-dim: #a0a0a0;
+    --accent: #f0f0f0;
+}
+
+/* GLOBAL FONT LOCK - Memastikan semua teks pakai Inter */
+* { 
+    margin: 0; padding: 0; box-sizing: border-box; 
+    font-family: 'Inter', sans-serif !important; 
+}
+
+/* KECUALI JUDUL DAN TANDA TANGAN */
+h1, .signature p, #safira-name { 
+    font-family: 'Playfair Display', serif !important; 
+}
+
+body, html { height: 100%; color: var(--text-main); background: var(--bg-color); overflow-x: hidden; scroll-behavior: smooth; }
+
+/* BACKGROUND ELEMENT */
+.bg-elements { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: black; }
+.heart-float { position: absolute; color: rgba(240,240,240,0.15); font-size: 20px; animation: floatUp 10s infinite linear; opacity: 0; }
+@keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity:0;} 50%{opacity:0.8;} 100%{transform:translateY(-10vh) scale(1.2); opacity:0;} }
+
+/* PASSWORD OVERLAY */
+#passwordOverlay { 
+    position: fixed; inset:0;
+    background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('bg-hero.jpg'); 
+    background-size: cover;
+    background-position: center;
+    display:flex; justify-content:center; align-items:center; z-index:10000; text-align:center; flex-direction:column; transition: 0.8s ease; 
+}
+#passwordOverlay input { padding:12px 20px; border-radius:30px; border:1px solid #444; background:rgba(0,0,0,0.5); color:white; font-size:16px; width:260px; text-align:center; outline:none; margin-top: 20px;}
+#passwordOverlay button { padding:10px 30px; margin-top:20px; border:none; border-radius:30px; background:var(--accent); color:black; cursor:pointer; font-weight:600; }
+
+/* INTRO SCREEN */
+#intro { 
+    position: fixed; inset:0; 
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('bg-hero.jpg'); 
+    background-size: cover;
+    background-position: center;
+    display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; z-index:9999; transition: opacity 1.5s ease; 
+}
+#intro h1 { font-size:48px; font-style:italic; margin-bottom:15px; }
+#playMusicIntro { margin-top:30px; padding:12px 25px; border:1px solid var(--accent); border-radius:5px; background:transparent; color:var(--accent); cursor:pointer; transition:0.4s; }
+
+/* MAIN CONTENT */
+#main { display:none; min-height:100vh; position:relative; z-index:1; }
+section { min-height:100vh; padding:80px 20px; display:flex; align-items:center; justify-content:center; transition: 1s ease; opacity:0; transform:translateY(40px); }
+section.visible { transform:translateY(0); opacity:1; }
+
+.content { display:flex; gap:50px; align-items:center; max-width:900px; background:var(--card-bg); padding:40px; border-radius:20px; border:1px solid #1a1a1a; flex-wrap:wrap; justify-content:center; }
+.content img, .content video { width:100%; max-width:350px; border-radius:10px; filter:grayscale(100%); transition:0.7s ease; }
+.content img:hover { filter:grayscale(0%); transform:scale(1.02); }
+
+.text { flex:1; min-width:300px; }
+.text h1 { font-size:32px; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px; }
+.text p { font-size:17px; line-height:1.8; color:var(--text-dim); }
+
+/* TYPEWRITER FIX */
+.word-span { display: inline-block; opacity: 0; transform: translateY(5px); transition: 0.4s ease-out; white-space: pre-wrap; }
+.word-span.show { opacity: 1; transform: translateY(0); }
+
+/* DIGITAL LETTER BOX */
+textarea { font-size: 16px; line-height: 1.8; }
+.letter-box { width:100%; text-align:center; }
+#envelopeIcon { font-size:60px; cursor:pointer; margin:20px 0; }
+#fullLetter { display:none; width: 100%; max-width: 800px; margin-top:30px; }
+
+/* TANDA TANGAN CUSTOM */
+.signature { text-align: right; }
+.signature .farewell { font-family: 'Playfair Display', serif !important; font-style: italic; font-size: 18px; color: #a0a0a0; margin: 0; }
+.signature #safira-name { font-family: 'Playfair Display', serif !important; font-style: normal; font-size: 32px; color: #fff; margin: 5px 0 0 0; }
+
+/* CONTROLS */
+#musicBtn { position:fixed; top:30px; right:30px; z-index:10000; background:rgba(255,255,255,0.1); border:1px solid #333; color:white; width:45px; height:45px; border-radius:50%; cursor:pointer; }
+.lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:0.4s; z-index:10001; }
+.lightbox.active { opacity:1; pointer-events:auto; }
+
+@media (max-width:768px){
+    .content{ padding:25px; flex-direction:column; }
+    .text h1{ text-align:center; }
+    .text p{ text-align:center; }
+    #intro h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-elements" id="bgHearts"></div>
+
+<div id="passwordOverlay">
+    <h1>PRIVATE ACCESS</h1>
+    <input type="password" id="pwInput" placeholder="Masukkan Password">
+    <button onclick="checkPassword()">MULAI</button>
+</div>
+
+<audio id="bgMusic" src="lagu.mp3" loop></audio>
+<button id="musicBtn" onclick="toggleMusic()">🔇</button>
+
+<div id="intro" style="display:none">
+    <div style="font-size:30px; margin-bottom:15px;">🤍</div>
+    <h1>Untuk Kamu</h1>
+    <p>yang pernah jadi rumah.</p>
+    <button id="playMusicIntro">MASUK KE MOMEN</button>
+</div>
+
+<div id="main">
+    <section>
+    <div class="content">
+        <img src="first_meet.jpg">
+        <div class="text">
+            <h1>The Beginning</h1>
+            <p class="typewriter">Setelah sekian lama hanya bertukar cerita lewat layar, akhirnya semesta mempertemukan kita secara nyata. Momen di mana aku selalu keinget rasanya jatuh cinta sama kamu untuk pertamakalinya..</p>
+        </div>
+    </div>
+    </section>
+
+    <section>
+    <div class="content">
+        <img src="foto2.jpg">
+        <div class="text">
+            <h1>When I Was Happy</h1>
+            <p class="typewriter">Pernah bahagia bareng kamu, dan itu nyata, meskipun sekarang tinggal kenangan. Di sini kamu nembak aku pas kita lagi nonton film sore dan pulangnya kita kehujanan haha u know how loved i felt at that time..</p>
+        </div>
+    </div>
+    </section>
+
+    <section>
+    <div class="content">
+        <div class="text">
+            <h1>What I’ll Remember</h1>
+            <p class="typewriter">Ini video yang pengen aku ingat terus, momen kita bareng.</p>
+        </div>
+        <video controls><source src="video.mp4" type="video/mp4"></video>
+    </div>
+    </section>
+
+    <section>
+    <div class="content" style="flex-direction: column; align-items: center;">
+        <h1>Funny Moments</h1>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%;">
+            <img src="funny1.jpg" style="max-width: 45%;">
+            <img src="funny2.jpg" style="max-width: 45%;">
+        </div>
+        <p class="typewriter" style="margin-top:20px; max-width:700px; text-align:center;">
+        Aku masih ngakak kalo inget kita maskeran bareng, muka kita kayak badut tapi kita tetep happy. Terus pas nyuci motor bareng, hal sepele itu malah jadi momen yang bikin aku ngerasa dekat sama kamu. Rasanya hangat gitu, kayak rumah kecil yang cuma kita berdua ngerti.
+        </p>
+    </div>
+    </section>
+
+    <section>
+    <div class="content">
+        <img src="sunset.jpg">
+        <div class="text">
+            <h1>Quiet Moments</h1>
+            <p class="typewriter">Kadang aku cuma pengen naik moku sama kamu, keliling atau berhenti jajan sebentar, tanpa ribet. Sunyi itu nggak sepi karena ada kamu, dan momen-momen sederhana itu justru yang paling aku inget terus.</p>
+        </div>
+    </div>
+    </section>
+
+    <section id="closure">
+    <div class="content">
+        <div class="letter-box">
+            <h1>The Last Chapter</h1>
+            <div id="envelopeIcon">✉️</div>
+            <div id="fullLetter">
+                <textarea id="digitalLetter" style="width:100%; min-height:350px; padding:25px; border-radius:15px; border:1px solid #333; background:#0a0a0a; color:#f0f0f0; resize:none; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">Putra, Aku cuma mau bilang... terima kasih. Terima kasih untuk semua rasa sayangmu, untuk semua hal yang pernah kamu korbankan buat aku. Aku tahu nggak gampang kadang, tapi kamu tetap kasih aku perhatian, kasih aku rumah saat aku butuh. Aku bener-bener menghargai itu, lebih dari yang bisa aku ucapin. Aku juga mau minta maaf... untuk semua salahku selama kita pacaran, untuk semua kata yang salah, sikap yang bikin kamu sakit, dan momen-momen di mana aku nggak bisa jadi yang terbaik buat kita. Aku sadar banyak hal yang aku lakukan yang bikin hubungan kita capek, termasuk diriku sendiri. Aku pengen perbaiki diriku, bukan cuma buat hubungan kita, tapi buat aku sendiri. Aku mau belajar dari saran-saranmu waktu itu, mau berubah jadi versi diri yang lebih baik, yang kamu dulu pernah harapin, yang kamu pernah harap aku bisa jadi. Aku nggak akan lari dari itu lagi. Aku sayang kamu, kamu tau itu. Tapi aku juga sadar... terlalu banyak hal yang bikin aku kehilangan diriku sendiri. Sekarang, aku mau bangkit, mau lebih kuat, lebih dewasa, dan lebih bisa mencintai diriku sendiri—seperti yang selalu kamu mau aku lakukan. Terima kasih untuk semuanya, Putra. Semua yang pernah kita lewati, semua yang pernah kita rasain... aku nggak akan lupain. Aku cuma berharap suatu saat kita bisa saling tersenyum lagi, tanpa beban, walau mungkin jalannya beda sekarang.</textarea>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 25px; width: 100%;">
+                    <button onclick="saveLetter()" style="padding: 12px 30px; border: none; border-radius: 30px; background: #f0f0f0; color: black; font-weight: 600; cursor: pointer;">Simpan Letter</button>
+                    <div class="signature">
+                        <p class="farewell">With love and goodbye,</p>
+                        <p id="safira-name">Safira </p>
+                    </div>
+                </div>
+                <p id="letterSaved" style="margin-top: 15px; display: none; color: #777; text-align: center;"> ✨</p>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <section id="noteForMiwa">
+    <div class="content">
+        <div class="text" style="text-align:center;">
+            <h1>One Last Note</h1>
+            <p class="typewriter">Kalau kamu sudah sampai sejauh ini, aku ingin dengar satu hal darimu.</p>
+            <textarea id="noteInput" placeholder="Tulis sesuatu untuk Miwa…" style="width:100%; max-width:500px; height:150px; margin-top:25px; padding:15px; background:#0a0a0a; border:1px solid #333; border-radius:10px; color:#f0f0f0; resize:none;"></textarea>
+            <br><br>
+            <button onclick="saveNote()" style="padding:10px 25px; border:none; border-radius:25px; background:#f0f0f0; color:black; font-weight:600; cursor:pointer;">Simpan Pesan</button>
+            <p id="noteSaved" style="margin-top:15px; display:none; color:#777;">Pesan ini tersimpan.</p>
+        </div>
+    </div>
+    </section>
+
+    <footer style="padding:60px; text-align:center; color:#444; font-style:italic;">Halaman ini dibuat untuk merayakan semua cerita yang pernah kita miliki.</footer>
+</div>
+
+<div class="lightbox" id="lightbox"></div>
+
+<script>
+const music = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+
+function checkPassword(){
+    if(document.getElementById('pwInput').value==="loveputra"){
+        document.getElementById('passwordOverlay').style.opacity='0';
+        setTimeout(()=>{
+            document.getElementById('passwordOverlay').style.display='none';
+            document.getElementById('intro').style.display='flex';
+        },800);
+    } else { alert('Password salah 😢'); }
+}
+
+document.getElementById('playMusicIntro').addEventListener('click', ()=>{
+    music.volume=0; music.play();
+    let fadeIn = setInterval(()=>{
+        if(music.volume<0.9){ music.volume+=0.1; } 
+        else{ music.volume=1; clearInterval(fadeIn);}
+    },200);
+    musicBtn.textContent='🔊';
+    document.getElementById('intro').style.opacity='0';
+    setTimeout(()=>{
+        document.getElementById('intro').style.display='none';
+        document.getElementById('main').style.display='block';
+        revealSections();
+    },1500);
+});
+
+function toggleMusic(){
+    if(music.paused){ music.play(); musicBtn.textContent='🔊'; } 
+    else { music.pause(); musicBtn.textContent='🔇'; }
+}
+
+function runTypewriter(el) {
+    if (el.dataset.animated === "true") return;
+    el.dataset.animated = "true";
+    const text = el.innerText;
+    el.innerHTML = ''; 
+    Array.from(text).forEach((char, i) => {
+        const span = document.createElement('span');
+        span.textContent = char; 
+        span.className = 'word-span';
+        el.appendChild(span);
+        setTimeout(() => { span.classList.add('show'); }, i * 40);
+    });
+}
+
+function revealSections(){
+    const observer = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+            if(entry.isIntersecting){
+                entry.target.classList.add('visible');
+                const tp=entry.target.querySelector('.typewriter');
+                if(tp) runTypewriter(tp);
+            }
+        });
+    },{threshold:0.1});
+    document.querySelectorAll('section').forEach(section=>observer.observe(section));
+}
+
+const lightbox = document.getElementById('lightbox');
+document.querySelectorAll('section img').forEach(img=>{
+    img.addEventListener('click', ()=>{
+        lightbox.innerHTML=`<img src="${img.src}" style="max-width:90%; max-height:90%; border:2px solid #333;">`;
+        lightbox.classList.add('active');
+    });
+});
+lightbox.addEventListener('click', ()=>lightbox.classList.remove('active'));
+
+document.getElementById('envelopeIcon').addEventListener('click', function(){
+    this.style.display = 'none';
+    document.getElementById('fullLetter').style.display = 'block';
+});
+
+function saveLetter() {
+    localStorage.setItem("saved_letter_putra", document.getElementById('digitalLetter').value);
+    document.getElementById('letterSaved').style.display = 'block';
+    setTimeout(() => { document.getElementById('letterSaved').style.display = 'none'; }, 3000);
+}
+
+function saveNote(){
+    localStorage.setItem("noteForMiwa", document.getElementById("noteInput").value);
+    document.getElementById("noteSaved").style.display="block";
+}
+
+const heartBox = document.getElementById('bgHearts');
+for(let i=0;i<15;i++){
+    let heart = document.createElement('div');
+    heart.className='heart-float'; heart.innerHTML='🤍';
+    heart.style.left=Math.random()*100+'vw';
+    heart.style.animationDelay=Math.random()*8+'s';
+    heartBox.appendChild(heart);
+}
+</script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Kamu, Putra</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg-color: #000000;
+    --card-bg: #0f0f0f;
+    --text-main: #f0f0f0;
+    --text-dim: #a0a0a0;
+    --accent: #f0f0f0;
+}
+
+/* GLOBAL FONT LOCK */
+* { 
+    margin: 0; padding: 0; box-sizing: border-box; 
+    font-family: 'Inter', sans-serif !important; 
+}
+
+/* KECUALI JUDUL DAN TANDA TANGAN */
+h1, .signature p, #safira-name { 
+    font-family: 'Playfair Display', serif !important; 
+}
+
+body, html { height: 100%; color: var(--text-main); background: var(--bg-color); overflow-x: hidden; scroll-behavior: smooth; }
+
+.bg-elements { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: black; }
+.heart-float { position: absolute; color: rgba(240,240,240,0.15); font-size: 20px; animation: floatUp 10s infinite linear; opacity: 0; }
+@keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5); opacity:0;} 50%{opacity:0.8;} 100%{transform:translateY(-10vh) scale(1.2); opacity:0;} }
+
+#passwordOverlay { 
+    position: fixed; inset:0;
+    background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('bg-hero.jpg'); 
+    background-size: cover;
+    background-position: center;
+    display:flex; justify-content:center; align-items:center; z-index:10000; text-align:center; flex-direction:column; transition: 0.8s ease; 
+}
+#passwordOverlay input { padding:12px 20px; border-radius:30px; border:1px solid #444; background:rgba(0,0,0,0.5); color:white; font-size:16px; width:260px; text-align:center; outline:none; margin-top: 20px;}
+#passwordOverlay button { padding:10px 30px; margin-top:20px; border:none; border-radius:30px; background:var(--accent); color:black; cursor:pointer; font-weight:600; }
+
+#intro { 
+    position: fixed; inset:0; 
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('bg-hero.jpg'); 
+    background-size: cover;
+    background-position: center;
+    display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; z-index:9999; transition: opacity 1.5s ease; 
+}
+#intro h1 { font-size:48px; font-style:italic; margin-bottom:15px; }
+#playMusicIntro { margin-top:30px; padding:12px 25px; border:1px solid var(--accent); border-radius:5px; background:transparent; color:var(--accent); cursor:pointer; transition:0.4s; }
+
+#main { display:none; min-height:100vh; position:relative; z-index:1; }
+section { min-height:100vh; padding:80px 20px; display:flex; align-items:center; justify-content:center; transition: 1s ease; opacity:0; transform:translateY(40px); }
+section.visible { transform:translateY(0); opacity:1; }
+
+.content { display:flex; gap:50px; align-items:center; max-width:900px; background:var(--card-bg); padding:40px; border-radius:20px; border:1px solid #1a1a1a; flex-wrap:wrap; justify-content:center; }
+.content img, .content video { width:100%; max-width:350px; border-radius:10px; filter:grayscale(100%); transition:0.7s ease; }
+.content img:hover { filter:grayscale(0%); transform:scale(1.02); }
+
+.text { flex:1; min-width:300px; }
+.text h1 { font-size:32px; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px; }
+.text p { font-size:17px; line-height:1.8; color:var(--text-dim); }
+
+.word-span { display: inline-block; opacity: 0; transform: translateY(5px); transition: 0.4s ease-out; white-space: pre-wrap; }
+.word-span.show { opacity: 1; transform: translateY(0); }
+
+textarea { font-size: 16px; line-height: 1.8; }
+.letter-box { width:100%; text-align:center; }
+#envelopeIcon { font-size:60px; cursor:pointer; margin:20px 0; }
+#fullLetter { display:none; width: 100%; max-width: 800px; margin-top:30px; }
+
+/* TANDA TANGAN CUSTOM - SEMUA ITALIC */
+.signature { text-align: right; width: 100%; margin-top: 20px; }
+.signature .farewell { font-family: 'Playfair Display', serif !important; font-style: italic; font-size: 18px; color: #a0a0a0; margin: 0; }
+.signature #safira-name { font-family: 'Playfair Display', serif !important; font-style: italic; font-size: 36px; color: #fff; margin: 5px 0 0 0; }
+
+#musicBtn { position:fixed; top:30px; right:30px; z-index:10000; background:rgba(255,255,255,0.1); border:1px solid #333; color:white; width:45px; height:45px; border-radius:50%; cursor:pointer; }
+.lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:0.4s; z-index:10001; }
+.lightbox.active { opacity:1; pointer-events:auto; }
+
+/* Styling Button Simpan untuk Miwa */
+.btn-save { padding:10px 25px; border:none; border-radius:25px; background:#f0f0f0; color:black; font-weight:600; cursor:pointer; margin-top:15px; transition: 0.3s; }
+.btn-save:hover { background: #cccccc; }
+
+@media (max-width:768px){
+    .content{ padding:25px; flex-direction:column; }
+    .text h1{ text-align:center; }
+    .text p{ text-align:center; }
+    #intro h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-elements" id="bgHearts"></div>
+
+<div id="passwordOverlay">
+    <h1>PRIVATE ACCESS</h1>
+    <input type="password" id="pwInput" placeholder="Masukkan Password">
+    <button onclick="checkPassword()">MULAI</button>
+</div>
+
+<audio id="bgMusic" src="lagu.mp3" loop></audio>
+<button id="musicBtn" onclick="toggleMusic()">🔇</button>
+
+<div id="intro" style="display:none">
+    <div style="font-size:30px; margin-bottom:15px;">🤍</div>
+    <h1>Untuk Kamu</h1>
+    <p>yang pernah jadi rumah.</p>
+    <button id="playMusicIntro">MASUK KE MOMEN</button>
+</div>
+
+<div id="main">
+    <section>
+    <div class="content">
+        <img src="first_meet.jpg">
+        <div class="text">
+            <h1>The Beginning</h1>
+            <p class="typewriter">Setelah sekian lama hanya bertukar cerita lewat layar, akhirnya semesta mempertemukan kita secara nyata. Momen di mana aku selalu keinget rasanya jatuh cinta sama kamu untuk pertamakalinya..</p>
+        </div>
+    </div>
+    </section>
+
+    <section>
+    <div class="content">
+        <img src="foto2.jpg">
+        <div class="text">
+            <h1>When I was Happy</h1>
+            <p class="typewriter">Pernah bahagia bareng kamu, dan itu nyata, meskipun sekarang tinggal kenangan. Di sini kamu nembak aku pas kita lagi nonton film sore dan pulangnya kita kehujanan haha u know how loved i felt at that time..</p>
+        </div>
+    </div>
+    </section>
+
+    <section>
+    <div class="content">
+        <div class="text">
+            <h1>What I’ll Remember</h1>
+            <p class="typewriter">Ini video yang pengen aku ingat terus, momen kita bareng.</p>
+        </div>
+        <video controls><source src="video.mp4" type="video/mp4"></video>
+    </div>
+    </section>
+
+    <section>
+    <div class="content" style="flex-direction: column; align-items: center;">
+        <h1>Funny Moments</h1>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%;">
+            <img src="funny1.jpg" style="max-width: 45%;">
+            <img src="funny2.jpg" style="max-width: 45%;">
+        </div>
+        <p class="typewriter" style="margin-top:20px; max-width:700px; text-align:center;">
+        Aku masih ngakak kalo inget kita maskeran bareng, muka kita kayak badut tapi kita tetep happy. Terus pas nyuci motor bareng, hal sepele itu malah jadi momen yang bikin aku ngerasa dekat sama kamu. Rasanya hangat gitu, kayak rumah kecil yang cuma kita berdua ngerti.
+        </p>
+    </div>
+    </section>
+
+    <section>
+    <div class="content">
+        <img src="sunset.jpg">
+        <div class="text">
+            <h1>Quiet Moments</h1>
+            <p class="typewriter">Kadang aku cuma pengen naik moku sama kamu, keliling atau berhenti jajan sebentar, tanpa ribet. Sunyi itu nggak sepi karena ada kamu, dan momen-momen sederhana itu justru yang paling aku inget terus.</p>
+        </div>
+    </div>
+    </section>
+
+    <section id="closure">
+    <div class="content">
+        <div class="letter-box">
+            <h1>The Last Chapter</h1>
+            <div id="envelopeIcon">✉️</div>
+            <div id="fullLetter">
+                <textarea id="digitalLetter" readonly style="width:100%; min-height:400px; padding:25px; border-radius:15px; border:1px solid #333; background:#0a0a0a; color:#f0f0f0; resize:none; outline:none;">Putra, Aku cuma mau bilang... terima kasih. Terima kasih untuk semua rasa sayangmu, untuk semua hal yang pernah kamu korbankan buat aku. Aku tahu nggak gampang kadang, tapi kamu tetap kasih aku perhatian, kasih aku rumah saat aku butuh. Aku bener-bener menghargai itu, lebih dari yang bisa aku ucapin. Aku juga mau minta maaf... untuk semua salahku selama kita pacaran, untuk semua kata yang salah, sikap yang bikin kamu sakit, dan momen-momen di mana aku nggak bisa jadi yang terbaik buat kita. Aku sadar banyak hal yang aku lakukan yang bikin hubungan kita capek, termasuk diriku sendiri. Aku pengen perbaiki diriku, bukan cuma buat hubungan kita, tapi buat aku sendiri. Aku mau belajar dari saran-saranmu waktu itu, mau berubah jadi versi diri yang lebih baik, yang kamu dulu pernah harapin, yang kamu pernah harap aku bisa jadi. Aku nggak akan lari dari itu lagi. Aku sayang kamu, kamu tau itu. Tapi aku juga sadar... terlalu banyak hal yang bikin aku kehilangan diriku sendiri. Sekarang, aku mau bangkit, mau lebih kuat, lebih dewasa, dan lebih bisa mencintai diriku sendiri—seperti yang selalu kamu mau aku lakukan. Terima kasih untuk semuanya, Putra. Semua yang pernah kita lewati, semua yang pernah kita rasain... aku nggak akan lupain. Aku cuma berharap suatu saat kita bisa saling tersenyum lagi, tanpa beban, walau mungkin jalannya beda sekarang.</textarea>
+                
+                <div class="signature">
+                    <p class="farewell">With love and goodbye,</p>
+                    <p id="safira-name">Safira ♥</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <section id="noteForMiwa">
+    <div class="content">
+        <div class="text" style="text-align:center;">
+            <h1>One Last Note</h1>
+            <p class="typewriter">Kalau kamu sudah sampai sejauh ini, aku ingin dengar satu hal darimu.</p>
+            <textarea id="noteInput" placeholder="Tulis sesuatu untuk Miwa…" style="width:100%; max-width:500px; height:150px; margin-top:25px; padding:15px; background:#0a0a0a; border:1px solid #333; border-radius:10px; color:#f0f0f0; resize:none;"></textarea>
+            <br>
+            <button onclick="saveNote()" class="btn-save">Simpan Pesan</button>
+            <p id="noteSaved" style="margin-top:15px; display:none; color:#777;">Pesan ini tersimpan✨</p>
+        </div>
+    </div>
+    </section>
+
+    <footer style="padding:60px; text-align:center; color:#444; font-style:italic;">Halaman ini dibuat untuk merayakan semua cerita yang pernah kita miliki.</footer>
+</div>
+
+<div class="lightbox" id="lightbox"></div>
+
+<script>
+const music = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+
+function checkPassword(){
+    if(document.getElementById('pwInput').value==="loveputra"){
+        document.getElementById('passwordOverlay').style.opacity='0';
+        setTimeout(()=>{
+            document.getElementById('passwordOverlay').style.display='none';
+            document.getElementById('intro').style.display='flex';
+        },800);
+    } else { alert('Password salah 😢'); }
+}
+
+document.getElementById('playMusicIntro').addEventListener('click', ()=>{
+    music.volume=0; music.play();
+    let fadeIn = setInterval(()=>{
+        if(music.volume<0.9){ music.volume+=0.1; } 
+        else{ music.volume=1; clearInterval(fadeIn);}
+    },200);
+    musicBtn.textContent='🔊';
+    document.getElementById('intro').style.opacity='0';
+    setTimeout(()=>{
+        document.getElementById('intro').style.display='none';
+        document.getElementById('main').style.display='block';
+        revealSections();
+    },1500);
+});
+
+function toggleMusic(){
+    if(music.paused){ music.play(); musicBtn.textContent='🔊'; } 
+    else { music.pause(); musicBtn.textContent='🔇'; }
+}
+
+function runTypewriter(el) {
+    if (el.dataset.animated === "true") return;
+    el.dataset.animated = "true";
+    const text = el.innerText;
+    el.innerHTML = ''; 
+    Array.from(text).forEach((char, i) => {
+        const span = document.createElement('span');
+        span.textContent = char; 
+        span.className = 'word-span';
+        el.appendChild(span);
+        setTimeout(() => { span.classList.add('show'); }, i * 40);
+    });
+}
+
+function revealSections(){
+    const observer = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+            if(entry.isIntersecting){
+                entry.target.classList.add('visible');
+                const tp=entry.target.querySelector('.typewriter');
+                if(tp) runTypewriter(tp);
+            }
+        });
+    },{threshold:0.1});
+    document.querySelectorAll('section').forEach(section=>observer.observe(section));
+}
+
+const lightbox = document.getElementById('lightbox');
+document.querySelectorAll('section img').forEach(img=>{
+    img.addEventListener('click', ()=>{
+        lightbox.innerHTML=`<img src="${img.src}" style="max-width:90%; max-height:90%; border:2px solid #333;">`;
+        lightbox.classList.add('active');
+    });
+});
+lightbox.addEventListener('click', ()=>lightbox.classList.remove('active'));
+
+document.getElementById('envelopeIcon').addEventListener('click', function(){
+    this.style.display = 'none';
+    document.getElementById('fullLetter').style.display = 'block';
+});
+
+// Fungsi simpan note tetap ada
+function saveNote(){
+    localStorage.setItem("noteForMiwa", document.getElementById("noteInput").value);
+    document.getElementById("noteSaved").style.display="block";
+    setTimeout(() => { document.getElementById('noteSaved').style.display = 'none'; }, 3000);
+}
+
+// Load note jika sudah pernah tersimpan
+window.onload = function() {
+    if(localStorage.getItem("noteForMiwa")) {
+        document.getElementById("noteInput").value = localStorage.getItem("noteForMiwa");
+    }
+}
+
+const heartBox = document.getElementById('bgHearts');
+for(let i=0;i<15;i++){
+    let heart = document.createElement('div');
+    heart.className='heart-float'; heart.innerHTML='🤍';
+    heart.style.left=Math.random()*100+'vw';
+    heart.style.animationDelay=Math.random()*8+'s';
+    heartBox.appendChild(heart);
+}
+</script>
+</body>
+</html>
